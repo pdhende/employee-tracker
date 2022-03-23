@@ -1,6 +1,6 @@
 const express = require('express');
 const inquirer = require('inquirer');
-const dbConnect = require('./config/connection');
+const getData = require('./getData');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -30,7 +30,9 @@ const optionArr = [
 // Function to present options to the user
 function init() {
     inquirer.prompt(optionArr).then((answers) => {
-        console.log(answers);
+        // console.log(answers);
+        // console.log(sq);
+        getData(answers.optionVal);
     });
 };
 
