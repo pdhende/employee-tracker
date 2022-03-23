@@ -33,7 +33,7 @@ function init() {
         // console.log(answers);
         // console.log(sq);
         getData(answers.optionVal);
-        console.log("Query done!");
+        // console.log("Query done!");
     });
 };
 
