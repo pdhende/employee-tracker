@@ -9,3 +9,31 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+// // Array of options for user to view/update company database
+const optionArr = [
+    {
+        type: "list",
+        name: "optionVal",
+        message: `What would you like to do?`,
+        choices: [
+                    'View all departments',
+                    'View all roles',
+                    'View all employees',
+                    'Add a department',
+                    'Add a role',
+                    'Add an employee',
+                    'Update an employee role'
+                ],
+    }
+];
+
+// Function to present options to the user
+function init() {
+    inquirer.prompt(optionArr).then((answers) => {
+        console.log(answers);
+    });
+};
+
+// Call function
+init();
+
