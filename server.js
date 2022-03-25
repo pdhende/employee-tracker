@@ -99,6 +99,45 @@ async function sendQuery(val) {
             ];
             showOptions(roleQues, 'roles');
             break;
+        case 'Add an employee':
+            // Get the role titles from roles table
+            let roleNames = await viewRoles();
+            // console.log(roleNames);
+            roleNames = roleNames.map((role) => role.Title);
+
+            // Get the employee names 
+            let empNames = await viewEmployee();
+            // console.log(empNames);
+            empNames = empNames.map((ename) => ename.First_Name.concat(' ',ename.Last_Name));
+            empNames.unshift('None');
+
+            // Questions for adding a new role
+            const empQues = [
+                {
+                    type: "input",
+                    name: "fname",
+                    message: `What is the employee's first name?`,
+                },
+                {
+                    type: "input",
+                    name: "lname",
+                    message: `What is the employee's last name?`,
+                },
+                {
+                    type: "list",
+                    name: "empRole",
+                    message: `What is the employee's role?`,
+                    choices: roleNames,
+                },
+                {
+                    type: "list",
+                    name: "empManager",
+                    message: `Who is the employee's manager?`,
+                    choices: empNames,
+                }
+            ];
+            showOptions(empQues, 'employee');
+            break;
         default:
             console.log('\x1b[35m', `\nThank you for visiting. Have a great day!`);
             break;
