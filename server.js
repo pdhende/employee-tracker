@@ -1,6 +1,6 @@
 const express = require('express');
 const inquirer = require('inquirer');
-const { viewDept, viewRoles, getDeptName } = require('./getData');
+const { viewDept, viewRoles, addData } = require('./getData');
 const conTable = require('console.table');
 
 const PORT = process.env.PORT || 3001;
@@ -9,8 +9,6 @@ const app = express();
 // Express middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
-// let deptnames = [];
 
 // Array of options for user to view/update company database
 const optionArr = [
@@ -30,14 +28,14 @@ const optionArr = [
     }
 ];
 
-// Questions for adding new department
-const deptQues = [
-    {
-        type: "input",
-        name: "deptName",
-        message: `What is the name of the department?`,
-    }
-];
+// // Questions for adding new department
+// const deptQues = [
+//     {
+//         type: "input",
+//         name: "deptName",
+//         message: `What is the name of the department?`,
+//     }
+// ];
 
 // // // Questions for adding a new role
 // const roleQues = [
@@ -51,12 +49,19 @@ const deptQues = [
 
 
 // Function to present options to the user
-function showOptions(quesArr) {
+function showOptions(quesArr, tbleName) {
     inquirer.prompt(quesArr)
         .then((answers) => {
+            console.log(answers);
             console.log(answers.optionVal);
-            if (answers.optionVal === 'undefined') {
-                sendQuery(answers.name);
+            if (tbleName === 'department') {
+                console.log("Inside dept");
+                addData(answers, tbleName)
+                .then(() => {
+                    console.log('\x1b[32m', `Added the new department : ${answers.name}`);
+                    showOptions(optionArr);
+                });
+                // sendQuery(answers.name);
             } else {
                 sendQuery(answers.optionVal);
             }
@@ -84,10 +89,18 @@ function sendQuery(val) {
             viewEmployee();
             break;
         case 'Add a department':
-            showOptions(deptQues);
+            // Questions for adding new department
+            const deptQues = [
+                {
+                    type: "input",
+                    name: "name",
+                    message: `What is the name of the department?`,
+                }
+            ];
+            showOptions(deptQues,'department');
             break;
         case 'Add a role':
-            getDeptName.then((results) => {
+            viewDept.then((results) => {
                 let deptnames = results;
                 // console.log(deptnames);
                 deptnames = deptnames.map((dept) => dept.name);
@@ -122,5 +135,5 @@ function sendQuery(val) {
 }
 
 // First call to the function
-showOptions(optionArr);
+showOptions(optionArr, null);
 
