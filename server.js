@@ -1,14 +1,6 @@
-// const express = require('express');
 const inquirer = require('inquirer');
 const { viewDept, viewRoles, addData } = require('./getData');
 const conTable = require('console.table');
-
-// const PORT = process.env.PORT || 3001;
-// const app = express();
-
-// // Express middleware
-// app.use(express.urlencoded({ extended: false }));
-// app.use(express.json());
 
 // Array of options for user to view/update company database
 const optionArr = [
@@ -34,10 +26,10 @@ function showOptions(quesArr, tbleName) {
     inquirer.prompt(quesArr)
         .then((answers) => {
 
-            if (tbleName === 'department') {
+            if (tbleName !== null) {
                 addData(answers, tbleName)
                 .then(() => {
-                    console.log('\x1b[32m', `Added the new department : ${answers.name}\n`);
+                    console.log('\x1b[32m', `Added a new ${tbleName} : ${answers.name}\n`);
                     showOptions(optionArr);
                 });
             } else {
@@ -52,15 +44,15 @@ function sendQuery(val) {
         case 'View all departments':
             viewDept.then((results) => {
                 const deptTbl = conTable.getTable(results);
-                console.log("\n\n" + deptTbl);
-                showOptions(optionArr);
+                console.log("\n" + deptTbl);
+                showOptions(optionArr, null);
             });
             break;
         case 'View all roles':
             viewRoles.then((results) => {
                 const deptTbl = conTable.getTable(results);
-                console.log("\n\n" + deptTbl);
-                showOptions(optionArr);
+                console.log("\n" + deptTbl);
+                showOptions(optionArr, null);
             });
             break;
         case 'View all employees':
@@ -101,7 +93,7 @@ function sendQuery(val) {
                         choices: deptnames,
                     }
                 ];
-                showOptions(roleQues);
+                showOptions(roleQues,'roles');
             });
             break;
         default:
