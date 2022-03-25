@@ -3,6 +3,7 @@
     "console.table": "^0.10.0",
     "express": "^4.17.3",
     "inquirer": "^8.2.1",
-    "mysql2": "^2.3.3"
+    "mysql2": "^2.3.3",
+    "promise-mysql2": "^1.0.0"
   }
 }
