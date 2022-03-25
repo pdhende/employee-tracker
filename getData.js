@@ -4,7 +4,7 @@ const conTable = require('console.table');
 const promiseConn = dbConnect.promise();
 
 // Custom promise function to retrive data of all departments 
-const viewDept = new Promise((resolve, reject) => {
+const viewDept = () => new Promise((resolve, reject) => {
     const sql = "SELECT * FROM department";
     promiseConn.query(sql)
     .then((results) => {
@@ -15,21 +15,10 @@ const viewDept = new Promise((resolve, reject) => {
             reject();
         }
     });
-        //     if (err) {
-        //         return reject(err);
-        //     }
-        //     resolve(results);
-        // });
-    // dbConnect.query(sql, (err, results) => {
-    //     if (err) {
-    //         return reject(err);
-    //     }
-    //     resolve(results);
-    // });
 });
 
 // Custom promise function to retrive data of all roles 
-const viewRoles = new Promise((resolve, reject) => {
+const viewRoles = () => new Promise((resolve, reject) => {
     const sql = "SELECT r.id, r.title, d.name department, r.salary FROM roles r, department d WHERE r.department_id = d.id";
     promiseConn.query(sql)
     .then((results) => {
@@ -40,12 +29,6 @@ const viewRoles = new Promise((resolve, reject) => {
             reject();
         }
     });
-    // dbConnect.query(sql, (err, results) => {
-    //     if (err) {
-    //         return reject(err);
-    //     }
-    //     resolve(results);
-    // });
 });
 
 // Generic promise function to insert data into database
@@ -62,8 +45,6 @@ const addData = function (data, tblName) {
         else if (tblName === 'roles') {
             str2 = ` (title, salary, department_id)`;
             str3 = ` VALUES ('${data.name}', ${data.salary}, (SELECT id FROM department WHERE name = '${data.deptName}'))`;
-
-            // INSERT INTO roles (title, salary, department_id) VALUES ('Customer Service', 60000, (SELECT id FROM department WHERE name = 'Service'));
         }
 
         const sql = str1 + str2 + str3;
@@ -78,7 +59,6 @@ const addData = function (data, tblName) {
                      reject();
                     }
                 });
-                // console.log(rows);
             });
         // dbConnect.query(sql, (err, results) => {
         //     if (err) {

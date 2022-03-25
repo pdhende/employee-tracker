@@ -42,21 +42,19 @@ function showOptions(quesArr, tbleName) {
 };
 
 // Function to invoke functions based on the user selection
-function sendQuery(val) {
+async function sendQuery(val) {
     switch (val) {
         case 'View all departments':
-            viewDept.then((results) => {
-                const deptTbl = conTable.getTable(results);
-                console.log("\n" + deptTbl);
-                showOptions(optionArr, null);
-            });
+            const deptRes = await viewDept();
+            const deptTbl = conTable.getTable(deptRes);
+            console.log("\n" + deptTbl);
+            showOptions(optionArr, null);
             break;
         case 'View all roles':
-            viewRoles.then((results) => {
-                const deptTbl = conTable.getTable(results);
-                console.log("\n" + deptTbl);
-                showOptions(optionArr, null);
-            });
+            const roleRes = await viewRoles();
+            const roleTbl = conTable.getTable(roleRes);
+            console.log("\n" + roleTbl);
+            showOptions(optionArr, null);
             break;
         case 'View all employees':
             viewEmployee();
@@ -73,9 +71,8 @@ function sendQuery(val) {
             showOptions(deptQues, 'department');
             break;
         case 'Add a role':
-            viewDept.then((results) => {
-                let deptnames = results;
-                deptnames = deptnames.map((dept) => dept.name);
+                let deptNames = await viewDept();
+                deptNames = deptNames.map((dept) => dept.name);
 
                 // Questions for adding a new role
                 const roleQues = [
@@ -93,11 +90,10 @@ function sendQuery(val) {
                         type: "list",
                         name: "deptName",
                         message: `Which department does the role belong to?`,
-                        choices: deptnames,
+                        choices: deptNames,
                     }
                 ];
                 showOptions(roleQues, 'roles');
-            });
             break;
         default:
             console.log('\x1b[35m', `\nThank you for visiting. Have a great day!`);
