@@ -95,6 +95,16 @@ function sendQuery(val) {
                 // Questions for adding a new role
                 const roleQues = [
                     {
+                        type: "input",
+                        name: "roleName",
+                        message: `What is the name of the role?`,
+                    },
+                    {
+                        type: "number",
+                        name: "roleSal",
+                        message: `What is the salary of the role?`,
+                    },
+                    {
                         type: "list",
                         name: "deptRole",
                         message: `Which department does the role belong to?`,
