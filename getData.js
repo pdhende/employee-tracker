@@ -30,16 +30,13 @@ const addData = function (data, tblName) {
     return new Promise((resolve, reject) => {
         let str1, str2, str3;
     
-        console.log(data);
         str1 = `INSERT INTO ${tblName}`;
-        // console.log(sql1)
         if(tblName === 'department') {
-            console.log("inside if");
             str2 = ` (name)`;
         }
         str3 = ` VALUES ('${data.name}')`;
         const sql = str1+str2+str3;
-        console.log(sql);
+        
         dbConnect.query(sql, (err, results) => {
             if (err) {
                 return reject(err);

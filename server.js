@@ -1,14 +1,14 @@
-const express = require('express');
+// const express = require('express');
 const inquirer = require('inquirer');
 const { viewDept, viewRoles, addData } = require('./getData');
 const conTable = require('console.table');
 
-const PORT = process.env.PORT || 3001;
-const app = express();
+// const PORT = process.env.PORT || 3001;
+// const app = express();
 
-// Express middleware
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+// // Express middleware
+// app.use(express.urlencoded({ extended: false }));
+// app.use(express.json());
 
 // Array of options for user to view/update company database
 const optionArr = [
@@ -23,45 +23,23 @@ const optionArr = [
             'Add a department',
             'Add a role',
             'Add an employee',
-            'Update an employee role'
+            'Update an employee role',
+            'Quit'
         ],
     }
 ];
-
-// // Questions for adding new department
-// const deptQues = [
-//     {
-//         type: "input",
-//         name: "deptName",
-//         message: `What is the name of the department?`,
-//     }
-// ];
-
-// // // Questions for adding a new role
-// const roleQues = [
-//     {
-//         type: "input",
-//         name: "deptRole",
-//         message: `Which department does the role belong to?`,
-//         choices: deptnames,
-//     }
-// ];
-
 
 // Function to present options to the user
 function showOptions(quesArr, tbleName) {
     inquirer.prompt(quesArr)
         .then((answers) => {
-            console.log(answers);
-            console.log(answers.optionVal);
+
             if (tbleName === 'department') {
-                console.log("Inside dept");
                 addData(answers, tbleName)
                 .then(() => {
-                    console.log('\x1b[32m', `Added the new department : ${answers.name}`);
+                    console.log('\x1b[32m', `Added the new department : ${answers.name}\n`);
                     showOptions(optionArr);
                 });
-                // sendQuery(answers.name);
             } else {
                 sendQuery(answers.optionVal);
             }
@@ -102,9 +80,8 @@ function sendQuery(val) {
         case 'Add a role':
             viewDept.then((results) => {
                 let deptnames = results;
-                // console.log(deptnames);
                 deptnames = deptnames.map((dept) => dept.name);
-                // console.log(deptnames);
+
                 // Questions for adding a new role
                 const roleQues = [
                     {
@@ -124,13 +101,12 @@ function sendQuery(val) {
                         choices: deptnames,
                     }
                 ];
-                // roleQues[0].choices = deptnames;
-                // console.log(roleQues);
                 showOptions(roleQues);
             });
             break;
         default:
-            console.log(`Sorry invalid choice`);
+            console.log('\x1b[35m', `\nThank you for visiting. Have a great day!`);
+            break;
     };
 }
 
