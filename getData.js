@@ -6,23 +6,46 @@ const promiseConn = dbConnect.promise();
 // Custom promise function to retrive data of all departments 
 const viewDept = new Promise((resolve, reject) => {
     const sql = "SELECT * FROM department";
-    dbConnect.query(sql, (err, results) => {
-        if (err) {
-            return reject(err);
+    promiseConn.query(sql)
+    .then((results) => {
+        if(results) {
+             resolve(results[0]);
         }
-        resolve(results);
+        else { 
+            reject();
+        }
     });
+        //     if (err) {
+        //         return reject(err);
+        //     }
+        //     resolve(results);
+        // });
+    // dbConnect.query(sql, (err, results) => {
+    //     if (err) {
+    //         return reject(err);
+    //     }
+    //     resolve(results);
+    // });
 });
 
 // Custom promise function to retrive data of all roles 
 const viewRoles = new Promise((resolve, reject) => {
     const sql = "SELECT r.id, r.title, d.name department, r.salary FROM roles r, department d WHERE r.department_id = d.id";
-    dbConnect.query(sql, (err, results) => {
-        if (err) {
-            return reject(err);
+    promiseConn.query(sql)
+    .then((results) => {
+        if(results) {
+             resolve(results[0]);
         }
-        resolve(results);
+        else { 
+            reject();
+        }
     });
+    // dbConnect.query(sql, (err, results) => {
+    //     if (err) {
+    //         return reject(err);
+    //     }
+    //     resolve(results);
+    // });
 });
 
 // Generic promise function to insert data into database
