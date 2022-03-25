@@ -16,7 +16,7 @@ const viewDept = new Promise((resolve, reject) => {
 
 // Custom promise function to retrive data of all roles 
 const viewRoles = new Promise((resolve, reject) => {
-    const sql = "SELECT * FROM roles";
+    const sql = "SELECT r.id, r.title, d.name department, r.salary FROM roles r, department d WHERE r.department_id = d.id";
     dbConnect.query(sql, (err, results) => {
         if (err) {
             return reject(err);
@@ -31,12 +31,20 @@ const addData = function (data, tblName) {
         let str1, str2, str3;
     
         str1 = `INSERT INTO ${tblName}`;
+        
         if(tblName === 'department') {
             str2 = ` (name)`;
+            str3 = ` VALUES ('${data.name}')`;
         }
-        str3 = ` VALUES ('${data.name}')`;
-        const sql = str1+str2+str3;
+        else if(tblName === 'roles') {
+            str2 = ` (title, salary, department_id)`;
+            str3 = ` VALUES ('${data.name}', ${data.salary}, (SELECT id FROM department WHERE name = '${data.deptName}'))`;
+
+            // INSERT INTO roles (title, salary, department_id) VALUES ('Customer Service', 60000, (SELECT id FROM department WHERE name = 'Service'));
+        }
         
+        const sql = str1+str2+str3;
+        console.log(sql);
         dbConnect.query(sql, (err, results) => {
             if (err) {
                 return reject(err);

@@ -28,13 +28,16 @@ function showOptions(quesArr, tbleName) {
 
             if (tbleName !== null) {
                 addData(answers, tbleName)
-                .then(() => {
-                    console.log('\x1b[32m', `Added a new ${tbleName} : ${answers.name}\n`);
-                    showOptions(optionArr);
-                });
+                    .then(() => {
+                        console.log('\x1b[32m', `Added a new ${tbleName} : ${answers.name}\n`);
+                        showOptions(optionArr, null);
+                    });
             } else {
                 sendQuery(answers.optionVal);
             }
+        })
+        .catch((error) => {
+            console.error(error);
         });
 };
 
@@ -67,7 +70,7 @@ function sendQuery(val) {
                     message: `What is the name of the department?`,
                 }
             ];
-            showOptions(deptQues,'department');
+            showOptions(deptQues, 'department');
             break;
         case 'Add a role':
             viewDept.then((results) => {
@@ -78,22 +81,22 @@ function sendQuery(val) {
                 const roleQues = [
                     {
                         type: "input",
-                        name: "roleName",
+                        name: "name",
                         message: `What is the name of the role?`,
                     },
                     {
                         type: "number",
-                        name: "roleSal",
+                        name: "salary",
                         message: `What is the salary of the role?`,
                     },
                     {
                         type: "list",
-                        name: "deptRole",
+                        name: "deptName",
                         message: `Which department does the role belong to?`,
                         choices: deptnames,
                     }
                 ];
-                showOptions(roleQues,'roles');
+                showOptions(roleQues, 'roles');
             });
             break;
         default:
