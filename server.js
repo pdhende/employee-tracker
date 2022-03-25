@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const { viewDept, viewRoles, addData } = require('./getData');
+const { viewDept, viewRoles, addData, viewEmployee } = require('./getData');
 const conTable = require('console.table');
 
 // Array of options for user to view/update company database
@@ -57,7 +57,11 @@ async function sendQuery(val) {
             showOptions(optionArr, null);
             break;
         case 'View all employees':
-            viewEmployee();
+            const empRes = await viewEmployee();
+            const empTbl = conTable.getTable(empRes);
+            console.log("\n" + empTbl);
+            showOptions(optionArr, null);
+            // viewEmployee();
             break;
         case 'Add a department':
             // Questions for adding new department
@@ -71,29 +75,29 @@ async function sendQuery(val) {
             showOptions(deptQues, 'department');
             break;
         case 'Add a role':
-                let deptNames = await viewDept();
-                deptNames = deptNames.map((dept) => dept.name);
+            let deptNames = await viewDept();
+            deptNames = deptNames.map((dept) => dept.name);
 
-                // Questions for adding a new role
-                const roleQues = [
-                    {
-                        type: "input",
-                        name: "name",
-                        message: `What is the name of the role?`,
-                    },
-                    {
-                        type: "number",
-                        name: "salary",
-                        message: `What is the salary of the role?`,
-                    },
-                    {
-                        type: "list",
-                        name: "deptName",
-                        message: `Which department does the role belong to?`,
-                        choices: deptNames,
-                    }
-                ];
-                showOptions(roleQues, 'roles');
+            // Questions for adding a new role
+            const roleQues = [
+                {
+                    type: "input",
+                    name: "name",
+                    message: `What is the name of the role?`,
+                },
+                {
+                    type: "number",
+                    name: "salary",
+                    message: `What is the salary of the role?`,
+                },
+                {
+                    type: "list",
+                    name: "deptName",
+                    message: `Which department does the role belong to?`,
+                    choices: deptNames,
+                }
+            ];
+            showOptions(roleQues, 'roles');
             break;
         default:
             console.log('\x1b[35m', `\nThank you for visiting. Have a great day!`);

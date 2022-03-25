@@ -7,28 +7,46 @@ const promiseConn = dbConnect.promise();
 const viewDept = () => new Promise((resolve, reject) => {
     const sql = "SELECT * FROM department";
     promiseConn.query(sql)
-    .then((results) => {
-        if(results) {
-             resolve(results[0]);
-        }
-        else { 
-            reject();
-        }
-    });
+        .then((results) => {
+            if (results) {
+                resolve(results[0]);
+            }
+            else {
+                reject();
+            }
+        });
 });
 
 // Custom promise function to retrive data of all roles 
 const viewRoles = () => new Promise((resolve, reject) => {
-    const sql = "SELECT r.id, r.title, d.name department, r.salary FROM roles r, department d WHERE r.department_id = d.id";
+    const sql = "SELECT r.id Id, r.title Title, d.name Department, r.salary Salary FROM roles r, department d WHERE r.department_id = d.id";
     promiseConn.query(sql)
-    .then((results) => {
-        if(results) {
-             resolve(results[0]);
-        }
-        else { 
-            reject();
-        }
-    });
+        .then((results) => {
+            if (results) {
+                resolve(results[0]);
+            }
+            else {
+                reject();
+            }
+        });
+});
+
+// Custom promise function to retrive data of all roles 
+const viewEmployee = () => new Promise((resolve, reject) => {
+    const sql = `SELECT emp.id Id, emp.first_name 'First Name', emp.last_name 'Last Name', r.title Title, d.name Department, r.salary Salary, concat(e.first_name, ' ', e.last_name) Manager
+    FROM employee emp
+    JOIN roles r ON emp.role_id = r.id
+    LEFT JOIN employee e ON emp.manager_id = e.id
+    JOIN department d ON r.department_id = d.id`;
+    promiseConn.query(sql)
+        .then((results) => {
+            if (results) {
+                resolve(results[0]);
+            }
+            else {
+                reject();
+            }
+        });
 });
 
 // Generic promise function to insert data into database
@@ -52,20 +70,14 @@ const addData = function (data, tblName) {
         promiseConn.query(sql)
             .then((data) => {
                 console.log(data[0]);
-                    if (data[0]) {
-                        resolve();
-                    }
-                    else {
-                     reject();
-                    }
-                });
+                if (data[0]) {
+                    resolve();
+                }
+                else {
+                    reject();
+                }
             });
-        // dbConnect.query(sql, (err, results) => {
-        //     if (err) {
-        //         return reject(err);
-        //     }
-        //     resolve(results);
-        // });
-    };
+    });
+};
 
-    module.exports = { viewDept, viewRoles, addData };
+module.exports = { viewDept, viewRoles, addData, viewEmployee};
