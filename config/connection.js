@@ -8,7 +8,7 @@ const dbConnect = mysql.createConnection(
       password: 'happyday',
       database: 'company_db'
     },
-    console.log('Connected to the Company database')
+    console.log('Welcome to the employee tracker! \n')
   );
 
   const promiseConn = dbConnect.promise();

@@ -1,6 +1,6 @@
 const inquirer = require('inquirer');
 const conTable = require('console.table');
-const { viewDept, addDept, deleteDept } = require('./controllers/dept');
+const { viewDept, addDept, deleteDept, viewDeptBudget } = require('./controllers/dept');
 const { viewRoles, addRole } = require('./controllers/role');
 const { viewEmployee, addEmp, updEmp } = require('./controllers/employee');
 
@@ -19,12 +19,13 @@ const optionArr = [
             'Add an employee',
             'Update an employee role',
             'Delete a department',
+            'View department budget',
             'Quit'
         ],
     }
 ];
 
-// Function to present options to the user
+// Function to present options to the user and based on the user selection perform db operations
 function showOptions(quesArr, tbleName, operatn) {
     inquirer.prompt(quesArr)
         .then((answers) => {
@@ -37,10 +38,10 @@ function showOptions(quesArr, tbleName, operatn) {
                         });
                 } else if (operatn === 'delete') {
                     deleteDept(answers)
-                    .then(() => {
-                        console.log('\x1b[32m', `Deleted ${tbleName} : ${answers.dName}\n`);
-                        showOptions(optionArr, null, null);
-                    });
+                        .then(() => {
+                            console.log('\x1b[32m', `Deleted ${tbleName} : ${answers.dName}\n`);
+                            showOptions(optionArr, null, null);
+                        });
                 }
             } else if (tbleName === 'role') {
                 addRole(answers)
@@ -72,7 +73,7 @@ function showOptions(quesArr, tbleName, operatn) {
         });
 };
 
-// Function to invoke functions based on the user selection
+// Function to invoke promise functions defined in the controllers 
 async function sendQuery(val) {
     switch (val) {
         case 'View all departments':
@@ -205,10 +206,15 @@ async function sendQuery(val) {
             ];
             showOptions(deptQ, 'department', 'delete');
             break;
+        case 'View department budget':
+            let deptBudget = await viewDeptBudget();
+            const deptBudTbl = conTable.getTable(deptBudget);
+            console.log("\n" + deptBudTbl);
+            showOptions(optionArr, null, null);
+            break;
         default:
-            console.log(`\nThank you for visiting. Have a great day!`);
+            console.log(`\nThank you for visiting. Have a great day!\n`);
             process.exit();
-        // break;
     };
 }
 
