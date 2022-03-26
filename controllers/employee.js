@@ -34,4 +34,20 @@ const addEmp = (data) => new Promise((resolve, reject) => {
         });
 });
 
-module.exports = { viewEmployee, addEmp };
+// Function to add a new employee to the database
+const updEmp = (data) => new Promise((resolve, reject) => {
+    
+    const sql = `UPDATE employee SET role_id = (SELECT id from (SELECT * FROM roles) tempRoles WHERE title = '${data.eRole}')  WHERE CONCAT(first_name, ' ', last_name) = '${data.empName}'`;
+
+    dbConnect.query(sql)
+        .then((results) => {
+            if (results) {
+                resolve(results[0]);
+            }
+            else {
+                reject();
+            }
+        });
+});
+
+module.exports = { viewEmployee, addEmp, updEmp };

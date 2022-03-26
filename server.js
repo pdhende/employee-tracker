@@ -1,9 +1,8 @@
 const inquirer = require('inquirer');
-// const { addData } = require('./getData');
 const conTable = require('console.table');
 const { viewDept, addDept } = require('./controllers/dept');
 const { viewRoles, addRole } = require('./controllers/role');
-const { viewEmployee, addEmp} = require('./controllers/employee');
+const { viewEmployee, addEmp, updEmp } = require('./controllers/employee');
 
 // Array of options for user to view/update company database
 const optionArr = [
@@ -25,27 +24,36 @@ const optionArr = [
 ];
 
 // Function to present options to the user
-function showOptions(quesArr, tbleName) {
+function showOptions(quesArr, tbleName, operatn) {
     inquirer.prompt(quesArr)
         .then((answers) => {
             if (tbleName === 'department') {
                 addDept(answers)
                     .then(() => {
                         console.log('\x1b[32m', `Added a new ${tbleName} : ${answers.name}\n`);
-                        showOptions(optionArr, null);
+                        showOptions(optionArr, null, null);
                     });
             } else if (tbleName === 'role') {
                 addRole(answers)
                     .then(() => {
                         console.log('\x1b[32m', `Added a new ${tbleName} : ${answers.name}\n`);
-                        showOptions(optionArr, null);
+                        showOptions(optionArr, null, null);
                     });
             } else if (tbleName === 'employee') {
-                addEmp(answers)
+                if (operatn === 'add') {
+                    addEmp(answers)
                     .then(() => {
                         console.log('\x1b[32m', `Added a new ${tbleName} : ${answers.fname} ${answers.lname}\n`);
-                        showOptions(optionArr, null);
+                        showOptions(optionArr, null, null);
                     });
+                    
+                } else if (operatn === 'update') {
+                    updEmp(answers)
+                    .then(() => {
+                        console.log('\x1b[32m', `Updated ${answers.empName}'s role to ${answers.eRole}\n`);
+                        showOptions(optionArr, null, null);
+                    });
+                }
             } else {
                 sendQuery(answers.optionVal);
             }
@@ -62,20 +70,19 @@ async function sendQuery(val) {
             const deptRes = await viewDept();
             const deptTbl = conTable.getTable(deptRes);
             console.log("\n" + deptTbl);
-            showOptions(optionArr, null);
+            showOptions(optionArr, null, null);
             break;
         case 'View all roles':
             const roleRes = await viewRoles();
             const roleTbl = conTable.getTable(roleRes);
             console.log("\n" + roleTbl);
-            showOptions(optionArr, null);
+            showOptions(optionArr, null, null);
             break;
         case 'View all employees':
             const empRes = await viewEmployee();
             const empTbl = conTable.getTable(empRes);
             console.log("\n" + empTbl);
-            showOptions(optionArr, null);
-            // viewEmployee();
+            showOptions(optionArr, null, null);
             break;
         case 'Add a department':
             // Questions for adding new department
@@ -86,7 +93,7 @@ async function sendQuery(val) {
                     message: `What is the name of the department?`,
                 }
             ];
-            showOptions(deptQues, 'department');
+            showOptions(deptQues, 'department', 'add');
             break;
         case 'Add a role':
             let deptNames = await viewDept();
@@ -111,21 +118,19 @@ async function sendQuery(val) {
                     choices: deptNames,
                 }
             ];
-            showOptions(roleQues, 'role');
+            showOptions(roleQues, 'role', 'add');
             break;
         case 'Add an employee':
             // Get the role titles from roles table
             let roleNames = await viewRoles();
-            // console.log(roleNames);
             roleNames = roleNames.map((role) => role.Title);
 
             // Get the employee names 
             let empNames = await viewEmployee();
-            // console.log(empNames);
             empNames = empNames.map((ename) => ename.First_Name.concat(' ', ename.Last_Name));
             empNames.unshift('None');
 
-            // Questions for adding a new role
+            // Questions for adding a new employee
             const empQues = [
                 {
                     type: "input",
@@ -150,7 +155,31 @@ async function sendQuery(val) {
                     choices: empNames,
                 }
             ];
-            showOptions(empQues, 'employee');
+            showOptions(empQues, 'employee', 'add');
+            break;
+        case 'Update an employee role':
+            let eNames = await viewEmployee();
+            eNames = eNames.map((ename) => ename.First_Name.concat(' ', ename.Last_Name));
+
+            let rNames = await viewRoles();
+            rNames = rNames.map((role) => role.Title);
+
+            // Questions for updating an employees role
+            const empUpQues = [
+                {
+                    type: "list",
+                    name: "empName",
+                    message: `Which employee's role do you want to update?`,
+                    choices: eNames,
+                },
+                {
+                    type: "list",
+                    name: "eRole",
+                    message: `Which role do you want to assign the selected employee?`,
+                    choices: rNames,
+                }
+            ];
+            showOptions(empUpQues, 'employee', 'update');
             break;
         default:
             console.log('\x1b[35m', `\nThank you for visiting. Have a great day!`);
@@ -159,5 +188,5 @@ async function sendQuery(val) {
 }
 
 // First call to the function
-showOptions(optionArr, null);
+showOptions(optionArr, null, null);
 
