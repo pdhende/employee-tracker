@@ -14,7 +14,7 @@ const viewDept = () => new Promise((resolve, reject) => {
         });
 });
 
-
+// Function to add new department to the database
 const addDept = (data) => new Promise((resolve, reject) => {
     
     const sql = `INSERT INTO department (name) VALUES (?)`;

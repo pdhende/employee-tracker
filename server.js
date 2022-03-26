@@ -2,7 +2,7 @@ const inquirer = require('inquirer');
 const { addData, viewEmployee } = require('./getData');
 const conTable = require('console.table');
 const { viewDept, addDept } = require('./controllers/dept');
-const { viewRoles } = require('./controllers/role');
+const { viewRoles, addRole } = require('./controllers/role');
 
 // Array of options for user to view/update company database
 const optionArr = [
@@ -27,9 +27,20 @@ const optionArr = [
 function showOptions(quesArr, tbleName) {
     inquirer.prompt(quesArr)
         .then((answers) => {
-
-            if (tbleName !== null) {
-                addData(answers, tbleName)
+            if (tbleName === 'department') {
+                addDept(answers)
+                    .then(() => {
+                        console.log('\x1b[32m', `Added a new ${tbleName} : ${answers.name}\n`);
+                        showOptions(optionArr, null);
+                    });
+            } else if (tbleName === 'role') {
+                addRole(answers)
+                    .then(() => {
+                        console.log('\x1b[32m', `Added a new ${tbleName} : ${answers.name}\n`);
+                        showOptions(optionArr, null);
+                    });
+            } else if (tbleName === 'employee') {
+                addEmp(answers)
                     .then(() => {
                         console.log('\x1b[32m', `Added a new ${tbleName} : ${answers.name}\n`);
                         showOptions(optionArr, null);
@@ -37,6 +48,15 @@ function showOptions(quesArr, tbleName) {
             } else {
                 sendQuery(answers.optionVal);
             }
+            // if (tbleName !== null) {
+            //     addData(answers, tbleName)
+            //         .then(() => {
+            //             console.log('\x1b[32m', `Added a new ${tbleName} : ${answers.name}\n`);
+            //             showOptions(optionArr, null);
+            //         });
+            // } else {
+            //     sendQuery(answers.optionVal);
+            // }
         })
         .catch((error) => {
             console.error(error);
@@ -99,7 +119,7 @@ async function sendQuery(val) {
                     choices: deptNames,
                 }
             ];
-            showOptions(roleQues, 'roles');
+            showOptions(roleQues, 'role');
             break;
         case 'Add an employee':
             // Get the role titles from roles table
@@ -110,7 +130,7 @@ async function sendQuery(val) {
             // Get the employee names 
             let empNames = await viewEmployee();
             // console.log(empNames);
-            empNames = empNames.map((ename) => ename.First_Name.concat(' ',ename.Last_Name));
+            empNames = empNames.map((ename) => ename.First_Name.concat(' ', ename.Last_Name));
             empNames.unshift('None');
 
             // Questions for adding a new role

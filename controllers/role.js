@@ -14,4 +14,20 @@ const viewRoles = () => new Promise((resolve, reject) => {
         });
 });
 
-module.exports = { viewRoles };
+// Function to add a new role to the database
+const addRole = (data) => new Promise((resolve, reject) => {
+    
+    const sql = `INSERT INTO roles (title, salary, department_id) VALUES ('${data.name}', ${data.salary}, (SELECT id FROM department WHERE name = '${data.deptName}'))`;
+
+    dbConnect.query(sql)
+        .then((results) => {
+            if (results) {
+                resolve(results[0]);
+            }
+            else {
+                reject();
+            }
+        });
+});
+
+module.exports = { viewRoles, addRole};
