@@ -4,32 +4,32 @@ const conTable = require('console.table');
 // const promiseConn = dbConnect.promise();
 
 // Custom promise function to retrive data of all departments 
-const viewDept = () => new Promise((resolve, reject) => {
-    const sql = "SELECT * FROM department";
-    dbConnect.query(sql)
-        .then((results) => {
-            if (results) {
-                resolve(results[0]);
-            }
-            else {
-                reject();
-            }
-        });
-});
+// const viewDept = () => new Promise((resolve, reject) => {
+//     const sql = "SELECT * FROM department";
+//     dbConnect.query(sql)
+//         .then((results) => {
+//             if (results) {
+//                 resolve(results[0]);
+//             }
+//             else {
+//                 reject();
+//             }
+//         });
+// });
 
-// Custom promise function to retrive data of all roles 
-const viewRoles = () => new Promise((resolve, reject) => {
-    const sql = "SELECT r.id Id, r.title Title, d.name Department, r.salary Salary FROM roles r, department d WHERE r.department_id = d.id";
-    dbConnect.query(sql)
-        .then((results) => {
-            if (results) {
-                resolve(results[0]);
-            }
-            else {
-                reject();
-            }
-        });
-});
+// // Custom promise function to retrive data of all roles 
+// const viewRoles = () => new Promise((resolve, reject) => {
+//     const sql = "SELECT r.id Id, r.title Title, d.name Department, r.salary Salary FROM roles r, department d WHERE r.department_id = d.id";
+//     dbConnect.query(sql)
+//         .then((results) => {
+//             if (results) {
+//                 resolve(results[0]);
+//             }
+//             else {
+//                 reject();
+//             }
+//         });
+// });
 
 // Custom promise function to retrive data of all roles 
 const viewEmployee = () => new Promise((resolve, reject) => {
@@ -53,7 +53,7 @@ const viewEmployee = () => new Promise((resolve, reject) => {
 const addData = function (data, tblName) {
     return new Promise((resolve, reject) => {
         let str1, str2, str3;
-
+        console.log(data.empManager);
         str1 = `INSERT INTO ${tblName}`;
 
         if (tblName === 'department') {
@@ -66,7 +66,7 @@ const addData = function (data, tblName) {
         }
         else {
             str2 = ` (first_name, last_name, role_id, manager_id)`;
-            str3 = ` VALUES ('${data.fname}', '${data.lname}', (SELECT id from (SELECT * FROM roles) tempRoles  where title = '${data.empRole}'), (SELECT id from (SELECT * FROM employee) tempEmp  where first_name = '${data.fname}' and last_name = '${data.lname}'));`
+            str3 = ` VALUES ('${data.fname}', '${data.lname}', (SELECT id from (SELECT * FROM roles) tempRoles  where title = '${data.empRole}'), (SELECT id from (SELECT * FROM employee) tempEmp  where CONCAT(first_name, ' ', last_name) = '${data.empManager}'));`
             // VALUES ('${data.fname}', '${data.lname}', (SELECT id from roles where title = '${data.empRole}'), (SELECT id from employee where first_name = '${data.fname}' and last_name = '${data.lname}'));`;
         }
 
@@ -91,4 +91,4 @@ const addData = function (data, tblName) {
 //     });
 // };
 
-module.exports = { viewDept, viewRoles, addData, viewEmployee };
+module.exports = { addData, viewEmployee };
