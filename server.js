@@ -1,9 +1,9 @@
 const inquirer = require('inquirer');
-const { addData } = require('./getData');
+// const { addData } = require('./getData');
 const conTable = require('console.table');
 const { viewDept, addDept } = require('./controllers/dept');
 const { viewRoles, addRole } = require('./controllers/role');
-const { viewEmployee } = require('./controllers/employee');
+const { viewEmployee, addEmp} = require('./controllers/employee');
 
 // Array of options for user to view/update company database
 const optionArr = [
@@ -43,21 +43,12 @@ function showOptions(quesArr, tbleName) {
             } else if (tbleName === 'employee') {
                 addEmp(answers)
                     .then(() => {
-                        console.log('\x1b[32m', `Added a new ${tbleName} : ${answers.name}\n`);
+                        console.log('\x1b[32m', `Added a new ${tbleName} : ${answers.fname} ${answers.lname}\n`);
                         showOptions(optionArr, null);
                     });
             } else {
                 sendQuery(answers.optionVal);
             }
-            // if (tbleName !== null) {
-            //     addData(answers, tbleName)
-            //         .then(() => {
-            //             console.log('\x1b[32m', `Added a new ${tbleName} : ${answers.name}\n`);
-            //             showOptions(optionArr, null);
-            //         });
-            // } else {
-            //     sendQuery(answers.optionVal);
-            // }
         })
         .catch((error) => {
             console.error(error);
