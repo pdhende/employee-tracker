@@ -1,6 +1,6 @@
 const inquirer = require('inquirer');
 const conTable = require('console.table');
-const { viewDept, addDept } = require('./controllers/dept');
+const { viewDept, addDept, deleteDept } = require('./controllers/dept');
 const { viewRoles, addRole } = require('./controllers/role');
 const { viewEmployee, addEmp, updEmp } = require('./controllers/employee');
 
@@ -18,6 +18,7 @@ const optionArr = [
             'Add a role',
             'Add an employee',
             'Update an employee role',
+            'Delete a department',
             'Quit'
         ],
     }
@@ -28,11 +29,19 @@ function showOptions(quesArr, tbleName, operatn) {
     inquirer.prompt(quesArr)
         .then((answers) => {
             if (tbleName === 'department') {
-                addDept(answers)
+                if (operatn === 'add') {
+                    addDept(answers)
+                        .then(() => {
+                            console.log('\x1b[32m', `Added a new ${tbleName} : ${answers.name}\n`);
+                            showOptions(optionArr, null, null);
+                        });
+                } else if (operatn === 'delete') {
+                    deleteDept(answers)
                     .then(() => {
-                        console.log('\x1b[32m', `Added a new ${tbleName} : ${answers.name}\n`);
+                        console.log('\x1b[32m', `Deleted ${tbleName} : ${answers.dName}\n`);
                         showOptions(optionArr, null, null);
                     });
+                }
             } else if (tbleName === 'role') {
                 addRole(answers)
                     .then(() => {
@@ -42,17 +51,17 @@ function showOptions(quesArr, tbleName, operatn) {
             } else if (tbleName === 'employee') {
                 if (operatn === 'add') {
                     addEmp(answers)
-                    .then(() => {
-                        console.log('\x1b[32m', `Added a new ${tbleName} : ${answers.fname} ${answers.lname}\n`);
-                        showOptions(optionArr, null, null);
-                    });
-                    
+                        .then(() => {
+                            console.log('\x1b[32m', `Added a new ${tbleName} : ${answers.fname} ${answers.lname}\n`);
+                            showOptions(optionArr, null, null);
+                        });
+
                 } else if (operatn === 'update') {
                     updEmp(answers)
-                    .then(() => {
-                        console.log('\x1b[32m', `Updated ${answers.empName}'s role to ${answers.eRole}\n`);
-                        showOptions(optionArr, null, null);
-                    });
+                        .then(() => {
+                            console.log('\x1b[32m', `Updated ${answers.empName}'s role to ${answers.eRole}\n`);
+                            showOptions(optionArr, null, null);
+                        });
                 }
             } else {
                 sendQuery(answers.optionVal);
@@ -181,9 +190,25 @@ async function sendQuery(val) {
             ];
             showOptions(empUpQues, 'employee', 'update');
             break;
-        default:
-            console.log('\x1b[35m', `\nThank you for visiting. Have a great day!`);
+        case 'Delete a department':
+            let deptName = await viewDept();
+            deptName = deptName.map((dept) => dept.name);
+
+            // Questions for delete a department
+            const deptQ = [
+                {
+                    type: "list",
+                    name: "dName",
+                    message: `Which department do you want to delete?`,
+                    choices: deptName,
+                },
+            ];
+            showOptions(deptQ, 'department', 'delete');
             break;
+        default:
+            console.log(`\nThank you for visiting. Have a great day!`);
+            process.exit();
+        // break;
     };
 }
 

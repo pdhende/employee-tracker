@@ -30,4 +30,20 @@ const addDept = (data) => new Promise((resolve, reject) => {
         });
 });
 
-module.exports = { viewDept, addDept };
+// Function to delete department to the database
+const deleteDept = (data) => new Promise((resolve, reject) => {
+    
+    const sql = `DELETE FROM department WHERE name = '${data.dName}'`;
+
+    dbConnect.query(sql)
+        .then((results) => {
+            if (results) {
+                resolve(results[0]);
+            }
+            else {
+                reject();
+            }
+        });
+});
+
+module.exports = { viewDept, addDept, deleteDept };
