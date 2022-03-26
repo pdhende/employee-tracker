@@ -11,4 +11,5 @@ const dbConnect = mysql.createConnection(
     console.log('Connected to the Company database')
   );
 
-  module.exports = dbConnect;
+  const promiseConn = dbConnect.promise();
+  module.exports = promiseConn;
