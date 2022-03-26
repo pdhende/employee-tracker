@@ -1,8 +1,9 @@
 const inquirer = require('inquirer');
-const { addData, viewEmployee } = require('./getData');
+const { addData } = require('./getData');
 const conTable = require('console.table');
 const { viewDept, addDept } = require('./controllers/dept');
 const { viewRoles, addRole } = require('./controllers/role');
+const { viewEmployee } = require('./controllers/employee');
 
 // Array of options for user to view/update company database
 const optionArr = [
