@@ -11,11 +11,12 @@
   The Employee tracker is a robust Content Management System. It enables the user to easily access company information such as departments, roles and employees. The user can view or manage the company database. 
   
 ## Screenshots
+![image](https://user-images.githubusercontent.com/65467469/160265017-87df86a1-004d-4bf5-9cb2-be027f98fbfe.png)
 
-
+![image](https://user-images.githubusercontent.com/65467469/160265036-f01ce3e8-0194-41c1-a6cc-d0cee2143d64.png)
 
 To watch the demo please follow URL : 
-
+https://drive.google.com/file/d/1gMsZlWGykdYsxo5x9gI3s4fhZL2FmVMB/view
 
 ## Built with
 This application is built using :
